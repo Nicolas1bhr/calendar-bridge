@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+coverage.xml
+htmlcov/
+
+# Runtime state — never commit calendar data, databases or backups
+data/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite*
+backups/
+status.json
+
+# Secrets — never commit credentials, keys or environment files
+.env
+*.env
+!.env.example
+secrets/
+*.key
+client_secret*.json
+credentials*.json
+token*.json
+*.pem
+
+# Local configuration (an example is committed)
+config/calendar-bridge.toml
+
+# Local tooling
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

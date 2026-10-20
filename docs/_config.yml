@@ -1,0 +1,4 @@
+# GitHub Pages (Settings -> Pages -> Deploy from a branch: main, /docs) publishes these documents,
+# including the home page and privacy policy a Google OAuth app needs. See setup.md, step 1.5.
+title: Calendar Bridge
+description: Two-way sync between Apple iCloud Calendar and Google Calendar, on your own machine.

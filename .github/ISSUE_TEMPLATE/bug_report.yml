@@ -1,0 +1,45 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not paste tokens, passwords, keys or event details.**
+        Security issues go through *Security → Report a vulnerability* instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to reproduce it
+      placeholder: "1. Create a weekly event on the iPhone\n2. Move one occurrence\n3. ..."
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `calendar-bridge --version`
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `calendar-bridge doctor` and `calendar-bridge status --no-titles`
+      render: text
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log lines
+      description: "`docker compose logs calendar-bridge` around the problem. Logs carry no event content, but check them."
+      render: text
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed anything private from what I pasted.
+          required: true

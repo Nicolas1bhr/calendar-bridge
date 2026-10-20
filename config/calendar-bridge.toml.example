@@ -1,0 +1,10 @@
+# Optional settings file, mounted read-only at /config/calendar-bridge.toml.
+# Same names as the CB_* environment variables, lower case without the prefix.
+# Environment variables take precedence over this file. Never put secrets here.
+
+sync_interval = 60
+default_timezone = "auto"
+default_history_days = 365
+meeting_policy = "authoritative"
+status_calendar = true
+lag_alert_seconds = 900

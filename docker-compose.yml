@@ -1,0 +1,71 @@
+# Calendar Bridge - always-on service. No ports are published: outbound HTTPS only.
+#
+# First run (docs/setup.md explains each step):
+#   docker compose pull                              # or `docker compose build` to build from source
+#   docker compose run --rm keygen                   # creates secrets/calendar_bridge_key once
+#   docker compose run --rm calendar-bridge setup    # connect both accounts, choose calendars
+#   docker compose up -d
+
+name: calendar-bridge
+
+x-image: &image ghcr.io/nicolas1bhr/calendar-bridge:0.2.0
+
+services:
+  calendar-bridge:
+    image: *image
+    build: .
+    container_name: calendar-bridge
+    restart: unless-stopped
+    init: true
+    command: ["daemon"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      CB_DATA_DIR: /data
+      CB_CONFIG: /config/calendar-bridge.toml
+      CB_ENCRYPTION_KEY_FILE: /run/secrets/calendar_bridge_key
+    secrets:
+      - calendar_bridge_key
+    volumes:
+      - calendar-bridge-data:/data           # database, encrypted credentials, backups, status.json
+      - ./config:/config:ro                  # optional calendar-bridge.toml (no secrets in here)
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    pids_limit: 128
+    stop_grace_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # One-off: `docker compose run --rm keygen` writes the encryption key, owned by the service's
+  # user (uid 10001) and readable by nobody else. It never replaces an existing key.
+  keygen:
+    image: *image
+    profiles: [setup]
+    user: "0:0"
+    network_mode: none
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [CHOWN, DAC_OVERRIDE]
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./secrets:/secrets
+    entrypoint: ["calendar-bridge", "keys", "init", "/secrets/calendar_bridge_key"]
+
+volumes:
+  calendar-bridge-data:
+    name: calendar-bridge-data
+
+secrets:
+  calendar_bridge_key:
+    file: ./secrets/calendar_bridge_key
